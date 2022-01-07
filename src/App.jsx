@@ -17,6 +17,9 @@ function App() {
             <PrivateRoute path='/profile/edit'>
               <EditProfile />
             </PrivateRoute>
+            <PrivateRoute path='/profile/create'>
+              <EditProfile />
+            </PrivateRoute>
             <PrivateRoute path='/profile'>
               <Profile />
             </PrivateRoute>

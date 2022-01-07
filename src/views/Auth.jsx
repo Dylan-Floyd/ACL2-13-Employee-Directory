@@ -7,7 +7,7 @@ import { signInUser, signUpUser } from '../services/users.js'
 export default function Auth() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
+  const [error, setError] = useState('')
   const { setUser } = useUser()
   const location = useLocation()
   const history = useHistory()
@@ -19,9 +19,9 @@ export default function Auth() {
       try {
         const user = await signUpUser(email, password)
         setUser(user)
-        history.push('/profile')
+        history.push('/profile/edit')
       } catch(e) {
-        setErrorMessage(e.message)
+        setError(e.message)
       }
     } else {
       try {
@@ -30,26 +30,34 @@ export default function Auth() {
         if(wasRedirected) history.goBack()
         else history.push('/profile')
       } catch(e) {
-        setErrorMessage(e.message)
+        setError(e.message)
       }
     }
   }
 
   return (
-    <div className='flex flex-col'>
-      {wasRedirected ? <p>You must log in before continuing</p> : <></>}
-      {errorMessage}
-      Login
-      <label>
-        Email:
-        <input type='text' value={email} onChange={({target}) => setEmail(target.value)}></input> 
-      </label>
-      <label>
-        Password: 
-        <input type='text' value={password} onChange={({target}) => setPassword(target.value)}></input>
-      </label>
-      <div>
-        <button onClick={handleSubmit} className='bg-'>Submit</button>
+    <div className='flex flex-col justify-center items-center'>
+      {error === '' ? <></> : (
+        <div className='bg-red-400 rounded-lg p-1 px-2 m-2'>
+          {error}
+        </div>
+      )}
+      <div className='flex flex-col bg-blue-100 p-4 rounded-lg m-4 gap-2'>
+        {wasRedirected ? <p>You must log in before continuing</p> : <></>}
+        <h2 className='text-xl flex flex-row justify-center'>
+          Login
+        </h2>
+          <label className='flex flex-row justify-between items-baseline'>
+            Email:
+            <input type='text' value={email} onChange={({target}) => setEmail(target.value)}></input> 
+          </label>
+        <label className='flex flex-row justify-between items-baseline'>
+          Password: 
+          <input type='password' value={password} onChange={({target}) => setPassword(target.value)}></input>
+        </label>
+        <div className='flex flex-row justify-center'>
+          <button onClick={handleSubmit} >Submit</button>
+        </div>
       </div>
     </div>
   )
