@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useLocation } from 'react-router-dom'
 import { useUser } from '../context/UserContext.jsx'
+import { getProfile } from '../services/profiles.js'
 import { signInUser, signUpUser } from '../services/users.js'
 
 export default function Auth() {
@@ -19,7 +20,7 @@ export default function Auth() {
       try {
         const user = await signUpUser(email, password)
         setUser(user)
-        history.push('/profile/edit')
+        history.push('/profile/create')
       } catch(e) {
         setError(e.message)
       }
@@ -27,8 +28,13 @@ export default function Auth() {
       try {
         const user = await signInUser(email, password)
         setUser(user)
-        if(wasRedirected) history.goBack()
-        else history.push('/profile')
+        try {
+          const profile = getProfile()
+          if(wasRedirected) history.goBack()
+          else history.push('/profile')
+        } catch (e) {
+          history.push('/profile/create')
+        }
       } catch(e) {
         setError(e.message)
       }
